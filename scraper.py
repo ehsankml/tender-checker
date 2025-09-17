@@ -1,25 +1,21 @@
-import requests
-from bs4 import BeautifulSoup
-import datetime
+import feedparser
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
 
-URL = "https://www.parsnamaddata.com/tender.html"
+# آدرس فید RSS
+URL = "https://www.parsnamaddata.com/rss"
 
-KEYWORDS = ["عمرانی", "راه", "پل", "ساختمان", "پروژه", "بتن", "بتن‌ریزی", "منهول", "عمران"]
+# کلیدواژه‌ها برای فیلتر کردن
+KEYWORDS = ["عمرانی", "راه", "پل", "ساختمان", "پروژه", "بتن", "بتن‌ریزی", "سازه", "عمران"]
 
 def get_tenders():
-    response = requests.get(URL)
-    response.encoding = "utf-8"
-    soup = BeautifulSoup(response.text, "html.parser")
-
+    feed = feedparser.parse(URL)
     tenders = []
-    for item in soup.select(".tender-list-item"):
-        title = item.get_text(strip=True)
-        link = item.find("a")["href"] if item.find("a") else None
-
+    for entry in feed.entries:
+        title = entry.title
+        link = entry.link
         if any(keyword in title for keyword in KEYWORDS):
             tenders.append({"title": title, "link": link})
     return tenders
@@ -30,7 +26,7 @@ def send_email(tenders):
     password = os.environ["EMAIL_PASS"]
 
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = "📢 گزارش روزانه مناقصه‌های عمرانی"
+    msg["Subject"] = "📢 گزارش روزانه مناقصه‌های عمرانی (RSS)"
     msg["From"] = sender_email
     msg["To"] = receiver_email
 
