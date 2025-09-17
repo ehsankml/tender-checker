@@ -8,6 +8,8 @@ import os
 
 URL = "https://www.parsnamaddata.com/tender.html"
 
+KEYWORDS = ["عمرانی", "راه", "پل", "ساختمان", "پروژه", "بتن", "بتن‌ریزی", "سازه", "عمران"]
+
 def get_tenders():
     response = requests.get(URL)
     response.encoding = "utf-8"
@@ -18,7 +20,7 @@ def get_tenders():
         title = item.get_text(strip=True)
         link = item.find("a")["href"] if item.find("a") else None
 
-        if any(keyword in title for keyword in ["عمرانی", "راه", "پل", "ساختمان", "پروژه"]):
+        if any(keyword in title for keyword in KEYWORDS):
             tenders.append({"title": title, "link": link})
     return tenders
 
