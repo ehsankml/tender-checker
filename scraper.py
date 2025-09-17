@@ -8,7 +8,7 @@ import os
 
 URL = "https://www.parsnamaddata.com/tender.html"
 
-KEYWORDS = ["عمرانی", "راه", "پل", "ساختمان", "پروژه", "بتن", "بتن‌ریزی", "سازه", "عمران"]
+KEYWORDS = ["عمرانی", "راه", "پل", "ساختمان", "پروژه", "بتن", "بتن‌ریزی", "منهول", "عمران"]
 
 def get_tenders():
     response = requests.get(URL)
